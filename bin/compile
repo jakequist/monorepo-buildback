@@ -53,3 +53,8 @@ copy "$APP_DIR/Gemfile.lock"
 copy "$APP_DIR/app.json"
 copy "$APP_DIR/Procfile"
 
+
+if [[ -f "$APP_DIR/heroku-build.sh" ]]; then
+  echo "Executing $APP_DIR/heroku-build.sh" | indent 
+  source "$APP_DIR/heroku-build.sh"
+fi
