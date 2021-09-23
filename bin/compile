@@ -1,17 +1,7 @@
 #!/usr/bin/env bash
 
-# Ensure wildcards in globs match dotfiles too.
-shopt -s dotglob
 
-indent() {
-    sed -u 's/^/      /'
-}
-
-JQ="/usr/bin/jq"
-if ! test -f "$JQ"; then
-  curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > "/usr/bin/jq" \
-      && chmod +x "/usr/bin/jq"
-fi
+## Setup 
 
 BUILD_DIR="$1"
 CACHE_DIR="$2"
@@ -24,8 +14,31 @@ fi
 APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
 APP_DIR="$BUILD_DIR/$APP_BASE"
 
+
+## Helpers 
+
+shopt -s dotglob
+
+indent() {
+    sed -u 's/^/      /'
+}
+
+JQ="/usr/bin/jq"
+if ! test -f "$JQ"; then
+  curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > "/usr/bin/jq" \
+      && chmod +x "/usr/bin/jq"
+fi
+
+
+## Copy & Merge 
+
 copy() {
-  if [[ -f "$1" ]]; then 
+  if [[ -f "$1.heroku" ]]; then 
+    # Copy heroku-specific files 
+    echo "Copying $1.heroku to $BUILD_DIR/$(basename $1 .heroku)" | indent
+    cp "$1.heroku" "$BUILD_DIR/$(basename $1 .heroku)"
+  elif [[ -f "$1" ]]; then 
+    # Copy general purpose 
     echo "Copying $1 to $BUILD_DIR" | indent
     cp "$1" "$BUILD_DIR/"
   fi
@@ -42,9 +55,9 @@ copy "$APP_DIR/Procfile"
 
 
 # Special merging 
-if [[ -f "$APP_DIR/package.json.heroku" ]]; then
-  # merge `package.json.heroku` on top of `package.json`
-  # i.e. we want to override the scripts section, not the dependencies, etc
-  echo "Merging $APP_DIR/package.json.heroku --> $APP_DIR/package.json"
-  jq -s '.[0] * .[1]' "$APP_DIR/package.json" "$APP_DIR/package.json.heroku" > "$BUILD_DIR/package.json"
+if [[ -f "$APP_DIR/package.json.heroku-merge" ]]; then
+  # Merge `package.json.heroku` on top of `package.json`
+  # i.e. we want to override the 'scripts' section, not the 'dependencies', etc
+  echo "Merging $APP_DIR/package.json.heroku-merge --> $APP_DIR/package.json"
+  jq -s '.[0] * .[1]' "$APP_DIR/package.json" "$APP_DIR/package.json.heroku-merge" > "$BUILD_DIR/package.json"
 fi
