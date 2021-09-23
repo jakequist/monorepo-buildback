@@ -24,7 +24,7 @@ copy() {
   if [[ -f "$1.heroku" ]]; then 
 
     echo "Copying $1.heroku to $BUILD_DIR/$(basename "$1.heroku" .heroku)" | indent
-    cp "$1" "$BUILD_DIR/$(basename "$1.heroku" .heroku)"
+    cp "$1.heroku" "$BUILD_DIR/$(basename "$1.heroku" .heroku)"
 
   elif [[ -f "$1" ]]; then 
 
@@ -42,6 +42,3 @@ copy "$APP_DIR/Gemfile"
 copy "$APP_DIR/Gemfile.lock"
 copy "$APP_DIR/app.json"
 copy "$APP_DIR/Procfile"
-
-ls 
-cat "$BUILD_DIR/package.json"
