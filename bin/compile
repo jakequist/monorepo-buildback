@@ -53,16 +53,3 @@ copy "$APP_DIR/Gemfile.lock"
 copy "$APP_DIR/app.json"
 copy "$APP_DIR/Procfile"
 
-
-# # Special merging 
-# if [[ -f "$APP_DIR/package.json.heroku-merge" ]]; then
-#   # Merge `package.json.heroku` on top of `package.json`
-#   # i.e. we want to override the 'scripts' section, not the 'dependencies', etc
-#   echo "Merging $APP_DIR/package.json.heroku-merge --> $APP_DIR/package.json"
-#   jq -s '.[0] * .[1]' "$APP_DIR/package.json" "$APP_DIR/package.json.heroku-merge" > "$BUILD_DIR/package.json"
-# fi
-
-if [[ -f "$APP_DIR/heroku-build.sh" ]]; then
-  echo "Executing $APP_DIR/heroku-build.sh"
-  source "$APP_DIR/heroku-build.sh"
-fi
