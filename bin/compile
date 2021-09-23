@@ -45,5 +45,6 @@ copy "$APP_DIR/Procfile"
 if [[ -f "$APP_DIR/package.json.heroku" ]]; then
   # merge `package.json.heroku` on top of `package.json`
   # i.e. we want to override the scripts section, not the dependencies, etc
-  jq -s '.[0] * .[1]' "$BUILD_DIR/package.json" "$APP_DIR/package.json.heroku" > "$BUILD_DIR/package.json"
+  echo jq -s '.[0] * .[1]' "$APP_DIR/package.json" "$APP_DIR/package.json.heroku" 
+  jq -s '.[0] * .[1]' "$APP_DIR/package.json" "$APP_DIR/package.json.heroku" > "$BUILD_DIR/package.json"
 fi
