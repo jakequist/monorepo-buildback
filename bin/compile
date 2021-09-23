@@ -16,15 +16,22 @@ if [ ! -f "${ENV_DIR}/APP_BASE" ]; then
     exit 1
 fi
 APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
-BUILD_DIR="$BUILD_DIR/$APP_BASE"
+APP_DIR="$BUILD_DIR/$APP_BASE"
 
-cp "$APP_DIR/requirements.txt" "$BUILD_DIR/requirements.txt" || true 
-cp "$APP_DIR/package.json" "$BUILD_DIR/package.json" || true 
-cp "$APP_DIR/package-lock.json" "$BUILD_DIR/package-lock.json" || true 
-cp "$APP_DIR/yarn.lock" "$BUILD_DIR/yarn.lock" || true 
-cp "$APP_DIR/Gemfile" "$BUILD_DIR/Gemfile" || true 
-cp "$APP_DIR/Gemfile.lock" "$BUILD_DIR/Gemfile.lock" || true 
-cp "$APP_DIR/app.json" "$BUILD_DIR/app.json" || true 
-cp "$APP_DIR/Procfile" "$BUILD_DIR/Procfile" || true 
-cp "$APP_DIR/Procfile.heroku" "$BUILD_DIR/Procfile" || true 
+copy() {
+  if [[ -f "$1" ]]; then 
+    echo "Coping $1 to $BUILD_DIR/" | indent
+    cp "$1" "$BUILD_DIR/"
+  fi
+}
+
+copy "$APP_DIR/requirements.txt"
+copy "$APP_DIR/package.json"
+copy "$APP_DIR/package-lock.json"
+copy "$APP_DIR/yarn.lock"
+copy "$APP_DIR/Gemfile"
+copy "$APP_DIR/Gemfile.lock"
+copy "$APP_DIR/app.json"
+copy "$APP_DIR/Procfile"
+copy "$APP_DIR/Procfile.heroku"
 
