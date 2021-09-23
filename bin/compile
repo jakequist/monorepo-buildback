@@ -19,15 +19,18 @@ APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
 APP_DIR="$BUILD_DIR/$APP_BASE"
 
 copy() {
-  if [[ -f "$1" ]]; then 
-    echo "Coping $1 to $BUILD_DIR" | indent
-    cp "$1" "$BUILD_DIR/"
-  fi
-
+  
   # Heroku specific?
   if [[ -f "$1.heroku" ]]; then 
+
     echo "Coping $1.heroku to $BUILD_DIR" | indent
     cp "$1" "$BUILD_DIR/$(basename "$1.heroku" .heroku)"
+
+  elif [[ -f "$1" ]]; then 
+
+    echo "Coping $1 to $BUILD_DIR" | indent
+    cp "$1" "$BUILD_DIR/"
+    
   fi
 }
 
